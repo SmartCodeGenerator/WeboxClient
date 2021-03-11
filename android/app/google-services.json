@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1032276413944",
+    "project_id": "webox-63a97",
+    "storage_bucket": "webox-63a97.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032276413944:android:03875f37fba42164899a0d",
+        "android_client_info": {
+          "package_name": "com.example.webox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032276413944-kkur4murlr7iokpfeupin4cgd1mjj8gj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8qwNjVGss_mJ7-fJXRnKTl90a-cpAAP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032276413944-kkur4murlr7iokpfeupin4cgd1mjj8gj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
