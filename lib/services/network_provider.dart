@@ -1,7 +1,7 @@
 import 'account_service.dart';
 
 class NetworkProvider {
-  static String _baseUrl = 'https://192.168.0.168:44386/api';
+  static const String _baseUrl = 'https://10.0.2.2:5001/api';
 
   static AccountService _accountService;
 

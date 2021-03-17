@@ -1,11 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:webox/config/http_config.dart';
+import 'package:webox/ui_components/app.dart';
 
-import 'config/routes.dart';
-
-void main() => runApp(
-      MaterialApp(
-        theme: ThemeData.light(),
-        routes: routes,
-        initialRoute: '/login',
-      ),
-    );
+void main() async {
+  HttpOverrides.global = WeboxHttpOverrides();
+  runApp(WeboxApp());
+}

@@ -10,12 +10,12 @@ class AccountBloc {
 
   Stream<AccountModel> get userAccount => _accountFetcher.stream;
 
-  Future<void> fetchUserAccount() async {
+  Future fetchUserAccount() async {
     var accountModel = await _service.getAccountInformation();
     _accountFetcher.sink.add(accountModel);
   }
 
-  Future<void> login(LoginModel model) async {
+  Future login(LoginModel model) async {
     String token = await _service.login(model);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('apiAccessToken', token);

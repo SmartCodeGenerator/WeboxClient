@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final model = LoginModel();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                           TextFormField(
+                            controller: passwordController,
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: true,
                             decoration: InputDecoration(
@@ -81,9 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (_formKey.currentState.validate()) {
                                 try {
                                   await accountBloc.login(model);
-                                  Navigator.pushNamed(context, '/');
+                                  Navigator.pushNamed(context, '/home');
                                 } catch (ex) {
                                   // TODO: show AlertDialog
+                                  passwordController.clear();
                                   print(ex);
                                 }
                               }
