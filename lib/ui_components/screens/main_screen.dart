@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webox/blocs/account_bloc.dart';
+import 'package:webox/config/screen_args/laptop_form_arguments.dart';
 import 'package:webox/models/account_model.dart';
+import 'package:webox/ui_components/utils/catalog_page.dart';
 import 'package:webox/ui_components/utils/main_screen_drawer.dart';
 
 class MainScreen extends StatefulWidget {
@@ -11,9 +13,9 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   AccountModel _accountModel;
   int _selectedIndex = 0;
-  final _itemViews = [
+  final _itemViews = <Widget>[
     Center(
-      child: Text('Каталог в розробці'),
+      child: CircularProgressIndicator(),
     ),
     Center(
       child: Text('Порівняння в розробці'),
@@ -36,6 +38,7 @@ class _MainScreenState extends State<MainScreen> {
       builder: (context, AsyncSnapshot<AccountModel> snapshot) {
         if (snapshot.hasData) {
           _accountModel = snapshot.data;
+          _itemViews[0] = CatalogPage(_accountModel.isEmployee);
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -43,6 +46,13 @@ class _MainScreenState extends State<MainScreen> {
               ),
               centerTitle: true,
               actions: [
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    // TODO: implement searchParam
+                    //var searchParam = await showSearch<String>(context: context, delegate: delegate);
+                  },
+                ),
                 IconButton(
                   icon: Icon(
                     Icons.shopping_cart,
@@ -94,7 +104,8 @@ class _MainScreenState extends State<MainScreen> {
                 _accountModel.isEmployee && _selectedIndex == 0
                     ? FloatingActionButton(
                         onPressed: () {
-                          // TODO: implement AddLaptopForm
+                          Navigator.pushNamed(context, '/laptops/form',
+                              arguments: LaptopFormArguments(null, false));
                         },
                         child: Icon(
                           Icons.add,

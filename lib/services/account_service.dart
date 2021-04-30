@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webox/models/account_model.dart';
 import 'package:webox/models/login_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:webox/models/register_model.dart';
 
 class AccountService {
   String _baseUrl;
@@ -21,6 +22,20 @@ class AccountService {
     };
     var response =
         await http.post('$_baseUrl/users/login', body: body, headers: headers);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Error ${response.statusCode}: ${response.body}');
+    }
+  }
+
+  Future<String> register(RegisterModel model) async {
+    var headers = {
+      'Accept': 'application/json',
+      'content-type': 'application/json'
+    };
+    var response = await http.post('$_baseUrl/users/register',
+        body: jsonEncode(model.toJson()), headers: headers);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
