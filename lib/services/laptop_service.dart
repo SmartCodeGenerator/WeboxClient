@@ -5,6 +5,7 @@ import 'package:webox/config/query_params/laptop_params.dart';
 import 'package:webox/models/laptop_model.dart';
 import 'package:webox/models/laptop_page_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:webox/models/review_model.dart';
 
 class LaptopService {
   String _baseUrl;
@@ -104,20 +105,24 @@ class LaptopService {
     if (response.statusCode == 200) {
       var parsedJson = jsonDecode(response.body);
       return LaptopWithIdModel(
-          parsedJson['id'],
-          parsedJson['modelName'],
-          parsedJson['manufacturer'],
-          parsedJson['processor'],
-          parsedJson['graphic'],
-          parsedJson['ram'],
-          parsedJson['ssd'],
-          parsedJson['screen'] + .0,
-          parsedJson['os'],
-          parsedJson['weight'] + .0,
-          parsedJson['price'] + .0,
-          parsedJson['rating'] + .0,
-          parsedJson['isAvailable'],
-          parsedJson['modelImagePath']);
+        parsedJson['id'],
+        parsedJson['modelName'],
+        parsedJson['manufacturer'],
+        parsedJson['processor'],
+        parsedJson['graphic'],
+        parsedJson['ram'],
+        parsedJson['ssd'],
+        parsedJson['screen'] + .0,
+        parsedJson['os'],
+        parsedJson['weight'] + .0,
+        parsedJson['price'] + .0,
+        parsedJson['rating'] + .0,
+        parsedJson['isAvailable'],
+        parsedJson['modelImagePath'],
+        parsedJson['reviews']
+            .map<ReviewInfoModel>((data) => ReviewInfoModel.fromJson(data))
+            .toList(),
+      );
     } else {
       throw Exception('Error ${response.statusCode}');
     }

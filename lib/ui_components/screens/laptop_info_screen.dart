@@ -3,6 +3,7 @@ import 'package:webox/blocs/laptop_bloc.dart';
 import 'package:webox/config/screen_args/laptop_info_arguments.dart';
 import 'package:webox/models/laptop_model.dart';
 import 'package:webox/ui_components/utils/laptop_info_main_page.dart';
+import 'package:webox/ui_components/utils/laptop_reviews.dart';
 
 class LaptopInfoScreen extends StatelessWidget {
   @override
@@ -36,20 +37,25 @@ class LaptopInfoScreen extends StatelessWidget {
             ),
             child: StreamBuilder(
               stream: laptopBloc.laptopModel,
-              builder: (context, AsyncSnapshot<LaptopModel> snapshot) {
+              builder: (context, AsyncSnapshot<LaptopWithIdModel> snapshot) {
                 if (snapshot.hasData) {
                   var model = snapshot.data;
+                  var reviews = model.reviews;
+                  reviews.sort(
+                      (r1, r2) => r2.pubDateTime.compareTo(r1.pubDateTime));
                   return TabBarView(
                     children: [
                       LaptopInfoMainPage(
                         arguments,
                         model,
                       ),
-                      // TODO: implement reviews
-                      Center(
-                        child: Text(
-                          'У розробці',
-                        ),
+                      LaptopReviews(
+                        reviews,
+                        arguments.id,
+                        arguments.isEmployee,
+                        arguments.pageIndex,
+                        arguments.sortOrder,
+                        arguments.laptopQueryParams,
                       ),
                     ],
                   );

@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webox/config/query_params/laptop_params.dart';
+import 'package:webox/config/screen_args/personal_review_arguments.dart';
 import 'package:webox/models/account_model.dart';
 
 class MainScreenDrawer extends StatefulWidget {
   final accountModel;
-  MainScreenDrawer(this.accountModel);
+  final int pageIndex;
+  final String sortOrder;
+  final LaptopQueryParams laptopQueryParams;
+
+  MainScreenDrawer(
+    this.accountModel,
+    this.pageIndex,
+    this.sortOrder,
+    this.laptopQueryParams,
+  );
 
   @override
   _MainScreenDrawerState createState() => _MainScreenDrawerState();
@@ -99,7 +110,16 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
               style: TextStyle(fontSize: 17.0),
             ),
             onTap: () {
-              // TODO: implement reviews screen
+              Navigator.pushNamed(
+                context,
+                '/reviews/user',
+                arguments: PersonalReviewArguments(
+                  _accountModel.isEmployee,
+                  widget.pageIndex,
+                  widget.sortOrder,
+                  widget.laptopQueryParams,
+                ),
+              );
             },
           ),
           _accountModel.isEmployee

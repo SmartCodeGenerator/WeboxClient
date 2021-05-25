@@ -7,6 +7,9 @@ import 'package:webox/ui_components/utils/laptop_tile.dart';
 
 class CatalogPage extends StatefulWidget {
   final bool isEmployee;
+  int pageIndex = 1;
+  String sortOrder;
+  LaptopQueryParams params;
 
   CatalogPage(this.isEmployee);
 
@@ -20,15 +23,12 @@ class _CatalogPageState extends State<CatalogPage> {
     'price_asc': 'Від дешевих до дорогих',
     'price_desc': 'Від дорогих до дешевих'
   };
-  String sortOrder;
-  LaptopQueryParams params;
-  int _page = 1;
 
   @override
   void initState() {
     super.initState();
-    sortOrder = sortMap.keys.first;
-    laptopBloc.fetchLaptopPageModel(_page, sortOrder, null);
+    widget.sortOrder = sortMap.keys.first;
+    laptopBloc.fetchLaptopPageModel(widget.pageIndex, widget.sortOrder, null);
   }
 
   Row buildCatalogRow(List<Widget> children) => Row(
@@ -42,15 +42,21 @@ class _CatalogPageState extends State<CatalogPage> {
         Expanded(
           flex: 1,
           child: LaptopTile(
-            model: laptops[2 * i],
-            isEmployee: widget.isEmployee,
+            laptops[2 * i],
+            widget.isEmployee,
+            widget.pageIndex,
+            widget.sortOrder,
+            widget.params,
           ),
         ),
         Expanded(
           flex: 1,
           child: LaptopTile(
-            model: laptops[(2 * i) + 1],
-            isEmployee: widget.isEmployee,
+            laptops[(2 * i) + 1],
+            widget.isEmployee,
+            widget.pageIndex,
+            widget.sortOrder,
+            widget.params,
           ),
         ),
       ]);
@@ -61,8 +67,11 @@ class _CatalogPageState extends State<CatalogPage> {
         Expanded(
           flex: 1,
           child: LaptopTile(
-            model: laptops.last,
-            isEmployee: widget.isEmployee,
+            laptops.last,
+            widget.isEmployee,
+            widget.pageIndex,
+            widget.sortOrder,
+            widget.params,
           ),
         ),
         Expanded(
@@ -97,7 +106,7 @@ class _CatalogPageState extends State<CatalogPage> {
                         width: 12.0,
                       ),
                       DropdownButton(
-                        value: sortOrder,
+                        value: widget.sortOrder,
                         style: TextStyle(
                           fontSize: 16.33,
                           color: Colors.black,
@@ -111,10 +120,13 @@ class _CatalogPageState extends State<CatalogPage> {
                             .toList(),
                         onChanged: (String value) async {
                           setState(() {
-                            sortOrder = value;
+                            widget.sortOrder = value;
                           });
                           await laptopBloc.fetchLaptopPageModel(
-                              1, sortOrder, params);
+                            1,
+                            widget.sortOrder,
+                            widget.params,
+                          );
                         },
                       ),
                     ],

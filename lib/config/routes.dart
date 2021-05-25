@@ -2,7 +2,9 @@ import 'package:webox/ui_components/screens/laptop_form_screen.dart';
 import 'package:webox/ui_components/screens/laptop_info_screen.dart';
 import 'package:webox/ui_components/screens/login_screen.dart';
 import 'package:webox/ui_components/screens/main_screen.dart';
+import 'package:webox/ui_components/screens/personal_reviews_screen.dart';
 import 'package:webox/ui_components/screens/register_screen.dart';
+import 'package:webox/ui_components/screens/review_form_screen.dart';
 
 final routes = {
   '/login': (context) => LoginScreen(),
@@ -10,4 +12,6 @@ final routes = {
   '/home': (context) => MainScreen(),
   '/laptops/form': (context) => LaptopFormScreen(),
   '/laptops/info': (context) => LaptopInfoScreen(),
+  '/reviews/form': (context) => ReviewFormScreen(),
+  '/reviews/user': (context) => PersonalReviewsScreen(),
 };

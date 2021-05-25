@@ -7,10 +7,10 @@ import 'package:webox/services/network_provider.dart';
 class LaptopBloc {
   final _service = NetworkProvider.laptopService;
   final _laptopPageFetcher = PublishSubject<LaptopPageModel>();
-  final _laptopModelFetcher = PublishSubject<LaptopModel>();
+  final _laptopModelFetcher = PublishSubject<LaptopWithIdModel>();
 
   Stream<LaptopPageModel> get laptopPageModel => _laptopPageFetcher.stream;
-  Stream<LaptopModel> get laptopModel => _laptopModelFetcher.stream;
+  Stream<LaptopWithIdModel> get laptopModel => _laptopModelFetcher.stream;
 
   Future fetchLaptopPageModel(
       int pageIndex, String sortOrder, LaptopQueryParams params) async {

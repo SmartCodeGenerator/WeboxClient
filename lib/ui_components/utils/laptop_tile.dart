@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:webox/config/query_params/laptop_params.dart';
 import 'package:webox/config/screen_args/laptop_info_arguments.dart';
 import 'package:webox/models/laptop_model.dart';
 
 class LaptopTile extends StatelessWidget {
   final LaptopWithIdModel model;
   final bool isEmployee;
+  final int pageIndex;
+  final String sortOrder;
+  final LaptopQueryParams laptopQueryParams;
 
-  LaptopTile({this.model, this.isEmployee});
+  LaptopTile(this.model, this.isEmployee, this.pageIndex, this.sortOrder,
+      this.laptopQueryParams);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/laptops/info',
-            arguments: LaptopInfoArguments(model.id, isEmployee));
+        Navigator.pushNamed(
+          context,
+          '/laptops/info',
+          arguments: LaptopInfoArguments(
+            model.id,
+            isEmployee,
+            pageIndex,
+            sortOrder,
+            laptopQueryParams,
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -80,8 +94,6 @@ class LaptopTile extends StatelessWidget {
                 color: Colors.amber,
               ),
               rating: model.rating,
-              itemCount: 5,
-              direction: Axis.horizontal,
               itemSize: 25.0,
             ),
             Row(

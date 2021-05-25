@@ -38,7 +38,8 @@ class _MainScreenState extends State<MainScreen> {
       builder: (context, AsyncSnapshot<AccountModel> snapshot) {
         if (snapshot.hasData) {
           _accountModel = snapshot.data;
-          _itemViews[0] = CatalogPage(_accountModel.isEmployee);
+          var catalogPage = CatalogPage(_accountModel.isEmployee);
+          _itemViews[0] = catalogPage;
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -50,7 +51,6 @@ class _MainScreenState extends State<MainScreen> {
                   icon: Icon(Icons.search),
                   onPressed: () async {
                     // TODO: implement searchParam
-                    //var searchParam = await showSearch<String>(context: context, delegate: delegate);
                   },
                 ),
                 IconButton(
@@ -63,7 +63,12 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
-            drawer: MainScreenDrawer(_accountModel),
+            drawer: MainScreenDrawer(
+              _accountModel,
+              catalogPage.pageIndex,
+              catalogPage.sortOrder,
+              catalogPage.params,
+            ),
             body: SafeArea(
               child: Padding(
                 padding: EdgeInsets.all(16.0),

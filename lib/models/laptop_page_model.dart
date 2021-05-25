@@ -1,3 +1,5 @@
+import 'package:webox/models/review_model.dart';
+
 import 'laptop_model.dart';
 
 class LaptopPageModel {
@@ -20,20 +22,26 @@ class LaptopPageModel {
 
     for (var jsonObj in parsedObjects) {
       _laptops.add(LaptopWithIdModel(
-          jsonObj['id'],
-          jsonObj['modelName'],
-          jsonObj['manufacturer'],
-          jsonObj['processor'],
-          jsonObj['graphic'],
-          jsonObj['ram'],
-          jsonObj['ssd'],
-          jsonObj['screen'] + .0,
-          jsonObj['os'],
-          jsonObj['weight'] + .0,
-          jsonObj['price'] + .0,
-          jsonObj['rating'] + .0,
-          jsonObj['isAvailable'],
-          jsonObj['modelImagePath']));
+        jsonObj['id'],
+        jsonObj['modelName'],
+        jsonObj['manufacturer'],
+        jsonObj['processor'],
+        jsonObj['graphic'],
+        jsonObj['ram'],
+        jsonObj['ssd'],
+        jsonObj['screen'] + .0,
+        jsonObj['os'],
+        jsonObj['weight'] + .0,
+        jsonObj['price'] + .0,
+        jsonObj['rating'] + .0,
+        jsonObj['isAvailable'],
+        jsonObj['modelImagePath'],
+        jsonObj['reviews'] != null
+            ? jsonObj['reviews']
+                .map((data) => ReviewInfoModel.fromJson(data))
+                .toList()
+            : [],
+      ));
     }
   }
 
