@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webox/models/account_model.dart';
+import 'package:webox/models/edit_user_info_model.dart';
 import 'package:webox/models/login_model.dart';
 import 'package:webox/models/register_model.dart';
 import 'package:webox/services/network_provider.dart';
@@ -26,6 +27,26 @@ class AccountBloc {
     String token = await _service.register(model);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('apiAccessToken', token);
+  }
+
+  Future<int> restorePassword(String email) async {
+    return await _service.restorePassword(email);
+  }
+
+  Future<int> updateProfileImage(String profileImagePath) async {
+    return await _service.updateProfileImage(profileImagePath);
+  }
+
+  Future<int> editAccountInformation(EditUserInfoModel model) async {
+    return await _service.editAccountInformation(model);
+  }
+
+  Future<String> getEmailUpdateVerificationCode() async {
+    return await _service.getUpdateEmailVerificationCode();
+  }
+
+  Future<int> updateEmail(String email) async {
+    return await _service.updateEmail(email);
   }
 
   void dispose() {

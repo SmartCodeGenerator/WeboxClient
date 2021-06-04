@@ -97,7 +97,9 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/password/restore');
+                          },
                           child: Text(
                             'Забули пароль?',
                             style: TextStyle(fontSize: 18.0),

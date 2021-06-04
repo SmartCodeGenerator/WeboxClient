@@ -48,28 +48,30 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
                 SizedBox(
                   width: 12.0,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _accountModel.fullName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _accountModel.fullName,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      _accountModel.email,
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 16.0,
+                      SizedBox(
+                        height: 6,
                       ),
-                    ),
-                  ],
+                      Text(
+                        _accountModel.email,
+                        style: TextStyle(
+                          color: Colors.white60,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
@@ -84,7 +86,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
               style: TextStyle(fontSize: 17.0),
             ),
             onTap: () {
-              // TODO: implement personal info editing screen
+              Navigator.pushNamed(context, '/personal-cabinet');
             },
           ),
           ListTile(

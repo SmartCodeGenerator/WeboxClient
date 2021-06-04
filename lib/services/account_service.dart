@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webox/models/account_model.dart';
+import 'package:webox/models/edit_user_info_model.dart';
 import 'package:webox/models/login_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:webox/models/register_model.dart';
@@ -58,5 +59,84 @@ class AccountService {
     } else {
       throw Exception('Error ${response.statusCode}');
     }
+  }
+
+  Future<int> restorePassword(String email) async {
+    var headers = {
+      'Accept': 'application/json',
+      'content-type': 'application/json'
+    };
+    var response = await http.post('$_baseUrl/users/password/restore',
+        body: jsonEncode(email), headers: headers);
+    if (response.statusCode != 200) {
+      print(response.body);
+    }
+    return response.statusCode;
+  }
+
+  Future<int> updateProfileImage(String profileImagePath) async {
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('apiAccessToken');
+    var headers = {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/json',
+      'content-type': 'application/json'
+    };
+    var response = await http.put('$_baseUrl/users/profile-image',
+        body: jsonEncode(profileImagePath), headers: headers);
+    if (response.statusCode != 200) {
+      print(response.body);
+    }
+    return response.statusCode;
+  }
+
+  Future<int> editAccountInformation(EditUserInfoModel model) async {
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('apiAccessToken');
+    var headers = {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/json',
+      'content-type': 'application/json'
+    };
+    var response = await http.put('$_baseUrl/users/account-information',
+        body: jsonEncode(model.toJson()), headers: headers);
+    if (response.statusCode != 200) {
+      print(response.body);
+    }
+    return response.statusCode;
+  }
+
+  Future<String> getUpdateEmailVerificationCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('apiAccessToken');
+    var headers = {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/json',
+      'content-type': 'application/json'
+    };
+    var response = await http.get('$_baseUrl/users/email', headers: headers);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else if (response.statusCode == 401) {
+      return '401';
+    } else {
+      return 'Помилка при відправці коду верифікації';
+    }
+  }
+
+  Future<int> updateEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('apiAccessToken');
+    var headers = {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/json',
+      'content-type': 'application/json'
+    };
+    var response = await http.put('$_baseUrl/users/email',
+        body: jsonEncode(email), headers: headers);
+    if (response.statusCode != 200) {
+      print(response.body);
+    }
+    return response.statusCode;
   }
 }
