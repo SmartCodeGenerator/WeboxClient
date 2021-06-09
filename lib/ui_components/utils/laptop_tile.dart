@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:webox/blocs/laptop_bloc.dart';
 import 'package:webox/config/query_params/laptop_params.dart';
 import 'package:webox/config/screen_args/laptop_info_arguments.dart';
 import 'package:webox/models/laptop_model.dart';
+import 'package:webox/models/order_item_model.dart';
+import 'package:webox/repositories/order_item_repository.dart';
 
 class LaptopTile extends StatelessWidget {
   final LaptopWithIdModel model;
@@ -12,7 +15,9 @@ class LaptopTile extends StatelessWidget {
   final LaptopQueryParams laptopQueryParams;
 
   LaptopTile(this.model, this.isEmployee, this.pageIndex, this.sortOrder,
-      this.laptopQueryParams);
+      this.laptopQueryParams,
+      {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -107,17 +112,60 @@ class LaptopTile extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.add_shopping_cart,
-                    size: 30.0,
-                    color: model.isAvailable ? Colors.green : Colors.grey,
-                  ),
-                  onPressed: model.isAvailable
-                      ? () {
-                          //TODO: implement add to cart
-                        }
-                      : null,
+                FutureBuilder(
+                  future: OrderItemRepository.isInCart(model.id),
+                  builder: (context, AsyncSnapshot<bool> snapshot) {
+                    if (snapshot.hasError) {
+                      print(snapshot.error.toString());
+                      return IconButton(
+                        icon: Icon(
+                          Icons.add_shopping_cart,
+                          size: 30.0,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {},
+                      );
+                    } else if (snapshot.hasData) {
+                      var isInCart = snapshot.data;
+                      return IconButton(
+                        icon: Icon(
+                          isInCart
+                              ? Icons.shopping_cart
+                              : Icons.add_shopping_cart,
+                          size: 30.0,
+                          color: model.isAvailable ? Colors.green : Colors.grey,
+                        ),
+                        onPressed: model.isAvailable
+                            ? () async {
+                                if (!isInCart) {
+                                  await OrderItemRepository.insert(
+                                      OrderItemModel(1, model.id));
+                                  laptopBloc.refreshCatalog(
+                                      pageIndex, sortOrder, laptopQueryParams);
+                                } else {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/shopping-cart',
+                                    arguments: {
+                                      'pageIndex': pageIndex,
+                                      'sortOrder': sortOrder,
+                                      'params': laptopQueryParams,
+                                    },
+                                  );
+                                }
+                              }
+                            : null,
+                      );
+                    }
+                    return IconButton(
+                      icon: Icon(
+                        Icons.add_shopping_cart,
+                        size: 30.0,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {},
+                    );
+                  },
                 ),
               ],
             ),

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:webox/blocs/account_bloc.dart';
 import 'package:webox/config/screen_args/laptop_form_arguments.dart';
 import 'package:webox/models/account_model.dart';
+import 'package:webox/repositories/order_item_repository.dart';
 import 'package:webox/ui_components/utils/catalog_page.dart';
 import 'package:webox/ui_components/utils/main_screen_drawer.dart';
+import 'package:webox/ui_components/utils/preferences_page.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -40,6 +42,8 @@ class _MainScreenState extends State<MainScreen> {
           _accountModel = snapshot.data;
           var catalogPage = CatalogPage(_accountModel.isEmployee);
           _itemViews[0] = catalogPage;
+          _itemViews[2] = PreferencesPage(_accountModel.isEmployee,
+              catalogPage.pageIndex, catalogPage.sortOrder, catalogPage.params);
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -51,6 +55,7 @@ class _MainScreenState extends State<MainScreen> {
                   icon: Icon(Icons.search),
                   onPressed: () async {
                     // TODO: implement searchParam
+                    await OrderItemRepository.truncate();
                   },
                 ),
                 IconButton(
@@ -58,7 +63,15 @@ class _MainScreenState extends State<MainScreen> {
                     Icons.shopping_cart,
                   ),
                   onPressed: () {
-                    // TODO: implement shopping cart
+                    Navigator.pushNamed(
+                      context,
+                      '/shopping-cart',
+                      arguments: {
+                        'pageIndex': catalogPage.pageIndex,
+                        'sortOrder': catalogPage.sortOrder,
+                        'params': catalogPage.params,
+                      },
+                    );
                   },
                 ),
               ],

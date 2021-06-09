@@ -5,6 +5,7 @@ import 'package:webox/models/laptop_model.dart';
 import 'package:webox/models/laptop_page_model.dart';
 import 'package:webox/ui_components/utils/laptop_tile.dart';
 
+// ignore: must_be_immutable
 class CatalogPage extends StatefulWidget {
   final bool isEmployee;
   int pageIndex = 1;
@@ -36,6 +37,18 @@ class _CatalogPageState extends State<CatalogPage> {
       );
 
   List<Widget> buildLaptopTiles(List<LaptopWithIdModel> laptops) {
+    var availableLaptops = <LaptopWithIdModel>[];
+    var unavailableLaptops = <LaptopWithIdModel>[];
+    laptops.forEach((laptop) {
+      if (laptop.isAvailable) {
+        availableLaptops.add(laptop);
+      } else {
+        unavailableLaptops.add(laptop);
+      }
+    });
+    laptops = [];
+    laptops.addAll(availableLaptops);
+    laptops.addAll(unavailableLaptops);
     List<Row> rows = [];
     for (int i = 0; i < laptops.length ~/ 2; i++) {
       var row = buildCatalogRow([
@@ -47,6 +60,9 @@ class _CatalogPageState extends State<CatalogPage> {
             widget.pageIndex,
             widget.sortOrder,
             widget.params,
+            key: ObjectKey(
+              laptops[2 * i],
+            ),
           ),
         ),
         Expanded(
@@ -57,6 +73,9 @@ class _CatalogPageState extends State<CatalogPage> {
             widget.pageIndex,
             widget.sortOrder,
             widget.params,
+            key: ObjectKey(
+              laptops[2 * i],
+            ),
           ),
         ),
       ]);
@@ -106,7 +125,10 @@ class _CatalogPageState extends State<CatalogPage> {
                         width: 12.0,
                       ),
                       DropdownButton(
-                        value: widget.sortOrder,
+                        value:
+                            widget.sortOrder == null || widget.sortOrder.isEmpty
+                                ? sortMap.keys.first
+                                : widget.sortOrder,
                         style: TextStyle(
                           fontSize: 16.33,
                           color: Colors.black,

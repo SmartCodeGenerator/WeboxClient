@@ -99,7 +99,15 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
               style: TextStyle(fontSize: 17.0),
             ),
             onTap: () {
-              // TODO: implement orders screen
+              Navigator.pushNamed(
+                context,
+                '/orders/list',
+                arguments: {
+                  'pageIndex': widget.pageIndex,
+                  'sortOrder': widget.sortOrder,
+                  'params': widget.laptopQueryParams,
+                },
+              );
             },
           ),
           ListTile(
@@ -135,7 +143,15 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
                     style: TextStyle(fontSize: 17.0),
                   ),
                   onTap: () {
-                    // TODO: implement storage lots screen
+                    Navigator.pushNamed(
+                      context,
+                      '/storage-lots/list',
+                      arguments: {
+                        'pageIndex': widget.pageIndex,
+                        'sortOrder': widget.sortOrder,
+                        'queryParams': widget.laptopQueryParams
+                      },
+                    );
                   },
                 )
               : Container(),
@@ -150,7 +166,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
                     style: TextStyle(fontSize: 17.0),
                   ),
                   onTap: () {
-                    // TODO: implement deliverers screen
+                    Navigator.pushNamed(context, '/deliverer/list');
                   },
                 )
               : Container(),

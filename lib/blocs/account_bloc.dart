@@ -1,9 +1,11 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webox/models/account_model.dart';
+import 'package:webox/models/change_password_model.dart';
 import 'package:webox/models/edit_user_info_model.dart';
 import 'package:webox/models/login_model.dart';
 import 'package:webox/models/register_model.dart';
+import 'package:webox/models/reset_password_model.dart';
 import 'package:webox/services/network_provider.dart';
 
 class AccountBloc {
@@ -47,6 +49,18 @@ class AccountBloc {
 
   Future<int> updateEmail(String email) async {
     return await _service.updateEmail(email);
+  }
+
+  Future<int> changePassword(ChangePasswordModel model) async {
+    return await _service.changePassword(model);
+  }
+
+  Future<String> getPasswordResetVerificationCode() async {
+    return await _service.getPasswordResetVerificationCode();
+  }
+
+  Future<int> resetPassword(ResetPasswordModel model) async {
+    return await _service.resetPassword(model);
   }
 
   void dispose() {

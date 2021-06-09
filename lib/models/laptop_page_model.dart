@@ -1,4 +1,5 @@
 import 'package:webox/models/review_model.dart';
+import 'package:webox/models/storage_lot_info_model.dart';
 
 import 'laptop_model.dart';
 
@@ -39,6 +40,12 @@ class LaptopPageModel {
         jsonObj['reviews'] != null
             ? jsonObj['reviews']
                 .map((data) => ReviewInfoModel.fromJson(data))
+                .toList()
+            : [],
+        jsonObj['storageLots'] != null
+            ? jsonObj['storageLots']
+                .map<StorageLotInfoModel>(
+                    (element) => StorageLotInfoModel.fromJson(element))
                 .toList()
             : [],
       ));

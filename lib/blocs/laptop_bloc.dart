@@ -18,6 +18,13 @@ class LaptopBloc {
     _laptopPageFetcher.sink.add(model);
   }
 
+  Future refreshCatalog(
+      int pageIndex, String sortOrder, LaptopQueryParams params) async {
+    for (int i = 1; i <= pageIndex; i++) {
+      await fetchLaptopPageModel(i, sortOrder, params);
+    }
+  }
+
   Future fetchLaptopModel(String id) async {
     var model = await _service.getLaptop(id);
     _laptopModelFetcher.sink.add(model);

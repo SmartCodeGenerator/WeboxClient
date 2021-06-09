@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:webox/blocs/laptop_bloc.dart';
+import 'package:webox/blocs/preference_bloc.dart';
 import 'package:webox/config/screen_args/laptop_form_arguments.dart';
 import 'package:webox/config/screen_args/laptop_info_arguments.dart';
 import 'package:webox/models/laptop_model.dart';
+import 'package:webox/models/order_item_model.dart';
+import 'package:webox/repositories/order_item_repository.dart';
 
 import 'popup_dialogs.dart';
 
@@ -15,6 +18,7 @@ class LaptopInfoMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    preferenceBloc.fetchPreferenceStatus(arguments.id);
     return CustomScrollView(
       slivers: [
         SliverFillRemaining(
@@ -349,32 +353,133 @@ class LaptopInfoMainPage extends StatelessWidget {
                       SizedBox(
                         width: 20.0,
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.favorite,
-                          size: 32.0,
-                        ),
-                        onPressed: () {
-                          // TODO: Implement add to favorites
+                      StreamBuilder(
+                        stream: preferenceBloc.preferenceStatus,
+                        builder: (context,
+                            AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                          if (snapshot.hasError) {
+                            print(snapshot.error.toString());
+                            return IconButton(
+                              icon: Icon(
+                                Icons.favorite,
+                                size: 32.0,
+                              ),
+                              onPressed: () {},
+                            );
+                          } else if (snapshot.hasData) {
+                            var status = snapshot.data;
+                            return IconButton(
+                              icon: Icon(
+                                Icons.favorite,
+                                size: 32.0,
+                                color: status['id'] == arguments.id &&
+                                        status['result']
+                                    ? Colors.red
+                                    : Colors.black,
+                              ),
+                              onPressed: () async {
+                                if (status['id'] == arguments.id) {
+                                  if (status['result']) {
+                                    Navigator.pushNamed(context, '/home');
+                                  } else {
+                                    var statusCode = await preferenceBloc
+                                        .addPreference(arguments.id);
+                                    if (statusCode == 200) {
+                                      preferenceBloc
+                                          .fetchPreferenceStatus(arguments.id);
+                                      preferenceBloc.fetchPreferences();
+                                    } else if (statusCode == 401) {
+                                      Navigator.pushNamed(context, '/login');
+                                    } else {
+                                      var snackBar = SnackBar(
+                                        content: Text(
+                                          'Помилка при додаванні до вподобань',
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    }
+                                  }
+                                }
+                              },
+                            );
+                          }
+                          return CircularProgressIndicator();
                         },
                       ),
                     ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // TODO: Implement add to shopping cart
+                  FutureBuilder(
+                    future: OrderItemRepository.isInCart(arguments.id),
+                    builder: (context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasError) {
+                        print(snapshot.error.toString());
+                        return ElevatedButton(
+                          onPressed: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 48.0,
+                              vertical: 8.0,
+                            ),
+                            child: Icon(
+                              Icons.add_shopping_cart,
+                              size: 32.0,
+                            ),
+                          ),
+                        );
+                      } else if (snapshot.hasData) {
+                        var isInCart = snapshot.data;
+                        return ElevatedButton(
+                          onPressed: () async {
+                            if (model.isAvailable) {
+                              if (!isInCart) {
+                                await OrderItemRepository.insert(
+                                    OrderItemModel(1, arguments.id));
+                              }
+                              laptopBloc.refreshCatalog(
+                                  arguments.pageIndex,
+                                  arguments.sortOrder,
+                                  arguments.laptopQueryParams);
+                              Navigator.pushNamed(
+                                context,
+                                '/shopping-cart',
+                                arguments: {
+                                  'pageIndex': arguments.pageIndex,
+                                  'sortOrder': arguments.sortOrder,
+                                  'params': arguments.laptopQueryParams,
+                                },
+                              );
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 48.0,
+                              vertical: 8.0,
+                            ),
+                            child: Icon(
+                              isInCart
+                                  ? Icons.shopping_cart
+                                  : Icons.add_shopping_cart,
+                              size: 32.0,
+                            ),
+                          ),
+                        );
+                      }
+                      return ElevatedButton(
+                        onPressed: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 48.0,
+                            vertical: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.add_shopping_cart,
+                            size: 32.0,
+                          ),
+                        ),
+                      );
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 48.0,
-                        vertical: 8.0,
-                      ),
-                      child: Icon(
-                        Icons.shopping_cart,
-                        size: 32.0,
-                      ),
-                    ),
-                  ),
+                  )
                 ],
               ),
               SizedBox(

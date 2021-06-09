@@ -6,6 +6,7 @@ import 'package:webox/models/laptop_model.dart';
 import 'package:webox/models/laptop_page_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:webox/models/review_model.dart';
+import 'package:webox/models/storage_lot_info_model.dart';
 
 class LaptopService {
   String _baseUrl;
@@ -119,9 +120,17 @@ class LaptopService {
         parsedJson['rating'] + .0,
         parsedJson['isAvailable'],
         parsedJson['modelImagePath'],
-        parsedJson['reviews']
-            .map<ReviewInfoModel>((data) => ReviewInfoModel.fromJson(data))
-            .toList(),
+        parsedJson['reviews'] != null
+            ? parsedJson['reviews']
+                .map<ReviewInfoModel>((data) => ReviewInfoModel.fromJson(data))
+                .toList()
+            : [],
+        parsedJson['storageLots'] != null
+            ? parsedJson['storageLots']
+                .map<StorageLotInfoModel>(
+                    (jsonObject) => StorageLotInfoModel.fromJson(jsonObject))
+                .toList()
+            : [],
       );
     } else {
       throw Exception('Error ${response.statusCode}');

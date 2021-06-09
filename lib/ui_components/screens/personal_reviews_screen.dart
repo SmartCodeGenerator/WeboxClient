@@ -45,6 +45,7 @@ class PersonalReviewsScreen extends StatelessWidget {
                           args.pageIndex,
                           args.sortOrder,
                           args.laptopQueryParams,
+                          key: ObjectKey(model),
                         ),
                       )
                       .toList(),

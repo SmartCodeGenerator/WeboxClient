@@ -1,4 +1,5 @@
 import 'package:webox/models/review_model.dart';
+import 'package:webox/models/storage_lot_info_model.dart';
 
 class LaptopModel {
   String modelName;
@@ -53,6 +54,7 @@ class LaptopModel {
 class LaptopWithIdModel extends LaptopModel {
   String id;
   List<ReviewInfoModel> reviews;
+  List<StorageLotInfoModel> storageLots;
 
   LaptopWithIdModel(
     this.id,
@@ -70,6 +72,7 @@ class LaptopWithIdModel extends LaptopModel {
     bool isAvailable,
     String modelImagePath,
     this.reviews,
+    this.storageLots,
   ) : super(modelName, manufacturer, processor, graphic, ram, ssd, screen, os,
             weight, price, rating, isAvailable, modelImagePath);
 }

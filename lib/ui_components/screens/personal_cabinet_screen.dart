@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webox/blocs/account_bloc.dart';
 import 'package:webox/models/account_model.dart';
+import 'package:webox/models/change_password_model.dart';
 import 'package:webox/models/edit_user_info_model.dart';
 import 'package:webox/ui_components/utils/popup_dialogs.dart';
 import 'package:webox/ui_components/utils/utility.dart';
@@ -146,7 +147,8 @@ class PersonalCabinetScreen extends StatelessWidget {
                                       context,
                                       '/verification',
                                       arguments: {
-                                        'title': 'Оновлення електронної пошти облікового запису',
+                                        'title':
+                                            'Оновлення електронної пошти облікового запису',
                                         'email': model.email,
                                         'code': result,
                                         'nextRoute': '/update-email',
@@ -171,7 +173,13 @@ class PersonalCabinetScreen extends StatelessWidget {
                       Column(
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/change-password',
+                                arguments: ChangePasswordModel('', '', ''),
+                              );
+                            },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 6.0,
@@ -189,7 +197,29 @@ class PersonalCabinetScreen extends StatelessWidget {
                             height: 12.0,
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              var result = await accountBloc
+                                  .getPasswordResetVerificationCode();
+                              if (result.contains('Помилка')) {
+                                var snackBar = SnackBar(content: Text(result));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              } else if (result == '401') {
+                                Navigator.pushNamed(context, '/login');
+                              } else {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/verification',
+                                  arguments: {
+                                    'title':
+                                        'Скидання пароля облікового запису',
+                                    'email': model.email,
+                                    'code': result,
+                                    'nextRoute': '/reset-password',
+                                  },
+                                );
+                              }
+                            },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 6.0,

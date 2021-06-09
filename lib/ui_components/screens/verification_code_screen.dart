@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webox/blocs/account_bloc.dart';
+import 'package:webox/models/reset_password_model.dart';
 
 class VerificationCodeScreen extends StatefulWidget {
   VerificationCodeScreen({Key key}) : super(key: key);
@@ -122,7 +123,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                                               'title': args['title'],
                                               'email': args['email']
                                             }
-                                          : null);
+                                          : ResetPasswordModel('', ''));
                             } else {
                               var snackBar = SnackBar(
                                 content: Text('Введений код є неправильним'),
@@ -150,7 +151,8 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       onPressed: () async {
                         var result = args['nextRoute'] == '/update-email'
                             ? await accountBloc.getEmailUpdateVerificationCode()
-                            : '111111';
+                            : await accountBloc
+                                .getPasswordResetVerificationCode();
                         if (result.contains('Помилка')) {
                           var snackBar = SnackBar(content: Text(result));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);

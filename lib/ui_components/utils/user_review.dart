@@ -18,13 +18,10 @@ class UserReview extends StatelessWidget {
   final String sortOrder;
   final LaptopQueryParams laptopQueryParams;
 
-  UserReview(
-    this.model,
-    this.isEmployee,
-    this.pageIndex,
-    this.sortOrder,
-    this.laptopQueryParams,
-  );
+  UserReview(this.model, this.isEmployee, this.pageIndex, this.sortOrder,
+      this.laptopQueryParams,
+      {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +134,7 @@ class UserReview extends StatelessWidget {
                                 await reviewBloc.deleteReview(model.id);
                             if (statusCode == 200) {
                               await laptopBloc.fetchLaptopModel(model.laptopId);
-                              await laptopBloc.fetchLaptopPageModel(
+                              await laptopBloc.refreshCatalog(
                                   pageIndex, sortOrder, laptopQueryParams);
                               await reviewBloc.getReviews();
                             } else if (statusCode == 401) {

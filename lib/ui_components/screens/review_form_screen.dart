@@ -87,7 +87,7 @@ class ReviewFormScreen extends StatelessWidget {
                               if (resultCode == 200) {
                                 await laptopBloc
                                     .fetchLaptopModel(model.laptopId);
-                                await laptopBloc.fetchLaptopPageModel(
+                                await laptopBloc.refreshCatalog(
                                     arguments.pageIndex,
                                     arguments.sortOrder,
                                     arguments.laptopQueryParams);
@@ -108,7 +108,7 @@ class ReviewFormScreen extends StatelessWidget {
                               if (resultCode == 200) {
                                 await laptopBloc
                                     .fetchLaptopModel(model.laptopId);
-                                await laptopBloc.fetchLaptopPageModel(
+                                await laptopBloc.refreshCatalog(
                                     arguments.pageIndex,
                                     arguments.sortOrder,
                                     arguments.laptopQueryParams);

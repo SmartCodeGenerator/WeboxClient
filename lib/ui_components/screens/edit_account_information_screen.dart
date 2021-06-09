@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:webox/blocs/account_bloc.dart';
-import 'package:webox/blocs/laptop_bloc.dart';
 import 'package:webox/models/edit_user_info_model.dart';
 
 class EditAccountInformationScreen extends StatelessWidget {

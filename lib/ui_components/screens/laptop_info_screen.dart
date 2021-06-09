@@ -4,6 +4,7 @@ import 'package:webox/config/screen_args/laptop_info_arguments.dart';
 import 'package:webox/models/laptop_model.dart';
 import 'package:webox/ui_components/utils/laptop_info_main_page.dart';
 import 'package:webox/ui_components/utils/laptop_reviews.dart';
+import 'package:webox/ui_components/utils/laptop_storage_lots.dart';
 
 class LaptopInfoScreen extends StatelessWidget {
   @override
@@ -12,7 +13,7 @@ class LaptopInfoScreen extends StatelessWidget {
         ModalRoute.of(context).settings.arguments as LaptopInfoArguments;
     laptopBloc.fetchLaptopModel(arguments.id);
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -21,11 +22,16 @@ class LaptopInfoScreen extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               Tab(
-                text: 'все про товар'.toUpperCase(),
+                text: 'опис'.toUpperCase(),
               ),
               Tab(
                 text: 'відгуки'.toUpperCase(),
               ),
+              arguments.isEmployee
+                  ? Tab(
+                      text: 'склад'.toUpperCase(),
+                    )
+                  : Container(),
             ],
           ),
           centerTitle: true,
@@ -56,6 +62,17 @@ class LaptopInfoScreen extends StatelessWidget {
                         arguments.pageIndex,
                         arguments.sortOrder,
                         arguments.laptopQueryParams,
+                      ),
+                      LaptopStorageLots(
+                        {
+                          'storageLots': model.storageLots,
+                          'laptopId': arguments.id,
+                          'laptopPageArgs': {
+                            'pageIndex': arguments.pageIndex,
+                            'sortOrder': arguments.sortOrder,
+                            'queryParams': arguments.laptopQueryParams,
+                          },
+                        },
                       ),
                     ],
                   );
