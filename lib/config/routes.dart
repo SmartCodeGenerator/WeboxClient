@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webox/ui_components/screens/card_payment_screen.dart';
 import 'package:webox/ui_components/screens/change_password_screen.dart';
+import 'package:webox/ui_components/screens/criteria_comparison_screen.dart';
+import 'package:webox/ui_components/screens/criteria_selection_screen.dart';
 import 'package:webox/ui_components/screens/deliverer_form_screen.dart';
 import 'package:webox/ui_components/screens/deliverer_list_screen.dart';
 import 'package:webox/ui_components/screens/edit_account_information_screen.dart';
@@ -51,4 +53,6 @@ final routes = <String, WidgetBuilder>{
   '/card-payment': (context) => CardPaymentScreen(),
   '/payment-result': (context) => PaymentResultScreen(),
   '/orders/list': (context) => OrdersListScreen(),
+  '/criteria-selection': (context) => CriteriaSelectionScreen(),
+  '/criteria-comparison': (context) => CriteriaComparisonScreen(),
 };

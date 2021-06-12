@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:webox/blocs/comparison_bloc.dart';
 import 'package:webox/blocs/laptop_bloc.dart';
+import 'package:webox/blocs/preference_bloc.dart';
 import 'package:webox/config/screen_args/laptop_info_arguments.dart';
 import 'package:webox/models/laptop_model.dart';
 import 'package:webox/ui_components/utils/laptop_info_main_page.dart';
@@ -51,9 +53,60 @@ class LaptopInfoScreen extends StatelessWidget {
                       (r1, r2) => r2.pubDateTime.compareTo(r1.pubDateTime));
                   return TabBarView(
                     children: [
-                      LaptopInfoMainPage(
-                        arguments,
-                        model,
+                      FutureBuilder(
+                        future:
+                            comparisonBloc.getComparisonStatus(arguments.id),
+                        builder: (context, AsyncSnapshot<bool> snapshot) {
+                          if (snapshot.hasError) {
+                            print(snapshot.error.toString());
+                            return Center(
+                              child: Text(
+                                'Помилка при завантаженні інформації про ноутбук',
+                                style: TextStyle(
+                                  fontSize: 16.33,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            );
+                          } else if (snapshot.hasData) {
+                            bool isCompared = snapshot.data;
+                            return FutureBuilder(
+                              future: preferenceBloc
+                                  .getPreferenceStatus(arguments.id),
+                              builder:
+                                  (context, AsyncSnapshot<bool> snapshot2) {
+                                if (snapshot2.hasError) {
+                                  print(snapshot2.error.toString());
+                                  return Center(
+                                    child: Text(
+                                      'Помилка при завантаженні інформації про ноутбук',
+                                      style: TextStyle(
+                                        fontSize: 16.33,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  );
+                                } else if (snapshot2.hasData) {
+                                  bool isPrefered = snapshot2.data;
+                                  return LaptopInfoMainPage(
+                                    arguments,
+                                    model,
+                                    isCompared,
+                                    isPrefered,
+                                  );
+                                }
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                            );
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
                       ),
                       LaptopReviews(
                         reviews,

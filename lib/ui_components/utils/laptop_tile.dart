@@ -22,7 +22,7 @@ class LaptopTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         Navigator.pushNamed(
           context,
           '/laptops/info',

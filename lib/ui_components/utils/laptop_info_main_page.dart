@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:webox/blocs/comparison_bloc.dart';
 import 'package:webox/blocs/laptop_bloc.dart';
 import 'package:webox/blocs/preference_bloc.dart';
 import 'package:webox/config/screen_args/laptop_form_arguments.dart';
@@ -10,15 +11,32 @@ import 'package:webox/repositories/order_item_repository.dart';
 
 import 'popup_dialogs.dart';
 
-class LaptopInfoMainPage extends StatelessWidget {
+class LaptopInfoMainPage extends StatefulWidget {
   final LaptopInfoArguments arguments;
   final LaptopModel model;
+  final bool isCompared;
+  final bool isPrefered;
 
-  LaptopInfoMainPage(this.arguments, this.model);
+  LaptopInfoMainPage(
+      this.arguments, this.model, this.isCompared, this.isPrefered);
+
+  @override
+  _LaptopInfoMainPageState createState() => _LaptopInfoMainPageState();
+}
+
+class _LaptopInfoMainPageState extends State<LaptopInfoMainPage> {
+  bool _isCompared;
+  bool _isPrefered;
+
+  @override
+  void initState() {
+    super.initState();
+    _isCompared = widget.isCompared;
+    _isPrefered = widget.isPrefered;
+  }
 
   @override
   Widget build(BuildContext context) {
-    preferenceBloc.fetchPreferenceStatus(arguments.id);
     return CustomScrollView(
       slivers: [
         SliverFillRemaining(
@@ -26,14 +44,14 @@ class LaptopInfoMainPage extends StatelessWidget {
           child: Column(
             children: [
               Image.network(
-                model.modelImagePath,
+                widget.model.modelImagePath,
                 height: 200,
               ),
               SizedBox(
                 height: 10.0,
               ),
               Text(
-                model.modelName,
+                widget.model.modelName,
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -48,7 +66,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                   Icons.star,
                   color: Colors.amber,
                 ),
-                rating: model.rating,
+                rating: widget.model.rating,
                 itemCount: 5,
                 direction: Axis.horizontal,
                 itemSize: 35.0,
@@ -66,17 +84,22 @@ class LaptopInfoMainPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    model.price.toString() + ' \u{20b4}',
+                    widget.model.price.toString() + ' \u{20b4}',
                     style: TextStyle(
-                      color: model.isAvailable ? Colors.blue : Colors.blueGrey,
+                      color: widget.model.isAvailable
+                          ? Colors.blue
+                          : Colors.blueGrey,
                       fontSize: 30.0,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   Text(
-                    model.isAvailable ? 'Є в наявності' : 'Немає в наявності',
+                    widget.model.isAvailable
+                        ? 'Є в наявності'
+                        : 'Немає в наявності',
                     style: TextStyle(
-                      color: model.isAvailable ? Colors.green : Colors.red,
+                      color:
+                          widget.model.isAvailable ? Colors.green : Colors.red,
                       fontSize: 20.0,
                     ),
                   ),
@@ -108,7 +131,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.screen.toString() + '``',
+                        widget.model.screen.toString() + '``',
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -138,7 +161,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.processor,
+                        widget.model.processor,
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -167,7 +190,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.os,
+                        widget.model.os,
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -197,7 +220,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.ram.toString() + ' ГБ',
+                        widget.model.ram.toString() + ' ГБ',
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -226,7 +249,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.ssd.toString() + ' ГБ SSD',
+                        widget.model.ssd.toString() + ' ГБ SSD',
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -256,7 +279,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.graphic,
+                        widget.model.graphic,
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -285,7 +308,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.weight.toString() + ' кг',
+                        widget.model.weight.toString() + ' кг',
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -315,7 +338,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        model.manufacturer,
+                        widget.model.manufacturer,
                         style: TextStyle(
                           fontSize: 16.33,
                         ),
@@ -345,72 +368,71 @@ class LaptopInfoMainPage extends StatelessWidget {
                         icon: Icon(
                           Icons.compare_outlined,
                           size: 32.0,
+                          color: _isCompared ? Colors.amber : Colors.black,
                         ),
-                        onPressed: () {
-                          // TODO: implement add to comparison
+                        onPressed: () async {
+                          if (_isCompared) {
+                            Navigator.pushNamed(context, '/home');
+                          } else {
+                            var statusCode = await comparisonBloc
+                                .addComparison(widget.arguments.id);
+                            if (statusCode == 200) {
+                              setState(() {
+                                _isCompared = true;
+                              });
+                              comparisonBloc.fetchComparisons();
+                            } else if (statusCode == 401) {
+                              Navigator.pushNamed(context, '/login');
+                            } else {
+                              var snackBar = SnackBar(
+                                content: Text(
+                                  'Помилка при додаванні до порівнянь',
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          }
                         },
                       ),
                       SizedBox(
                         width: 20.0,
                       ),
-                      StreamBuilder(
-                        stream: preferenceBloc.preferenceStatus,
-                        builder: (context,
-                            AsyncSnapshot<Map<String, dynamic>> snapshot) {
-                          if (snapshot.hasError) {
-                            print(snapshot.error.toString());
-                            return IconButton(
-                              icon: Icon(
-                                Icons.favorite,
-                                size: 32.0,
-                              ),
-                              onPressed: () {},
-                            );
-                          } else if (snapshot.hasData) {
-                            var status = snapshot.data;
-                            return IconButton(
-                              icon: Icon(
-                                Icons.favorite,
-                                size: 32.0,
-                                color: status['id'] == arguments.id &&
-                                        status['result']
-                                    ? Colors.red
-                                    : Colors.black,
-                              ),
-                              onPressed: () async {
-                                if (status['id'] == arguments.id) {
-                                  if (status['result']) {
-                                    Navigator.pushNamed(context, '/home');
-                                  } else {
-                                    var statusCode = await preferenceBloc
-                                        .addPreference(arguments.id);
-                                    if (statusCode == 200) {
-                                      preferenceBloc
-                                          .fetchPreferenceStatus(arguments.id);
-                                      preferenceBloc.fetchPreferences();
-                                    } else if (statusCode == 401) {
-                                      Navigator.pushNamed(context, '/login');
-                                    } else {
-                                      var snackBar = SnackBar(
-                                        content: Text(
-                                          'Помилка при додаванні до вподобань',
-                                        ),
-                                      );
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar);
-                                    }
-                                  }
-                                }
-                              },
-                            );
+                      IconButton(
+                        icon: Icon(
+                          Icons.favorite,
+                          size: 32.0,
+                          color: _isPrefered ? Colors.red : Colors.black,
+                        ),
+                        onPressed: () async {
+                          if (_isPrefered) {
+                            Navigator.pushNamed(context, '/home');
+                          } else {
+                            var statusCode = await preferenceBloc
+                                .addPreference(widget.arguments.id);
+                            if (statusCode == 200) {
+                              setState(() {
+                                _isPrefered = true;
+                              });
+                              preferenceBloc.fetchPreferences();
+                            } else if (statusCode == 401) {
+                              Navigator.pushNamed(context, '/login');
+                            } else {
+                              var snackBar = SnackBar(
+                                content: Text(
+                                  'Помилка при додаванні до вподобань',
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
                           }
-                          return CircularProgressIndicator();
                         },
                       ),
                     ],
                   ),
                   FutureBuilder(
-                    future: OrderItemRepository.isInCart(arguments.id),
+                    future: OrderItemRepository.isInCart(widget.arguments.id),
                     builder: (context, AsyncSnapshot<bool> snapshot) {
                       if (snapshot.hasError) {
                         print(snapshot.error.toString());
@@ -431,22 +453,22 @@ class LaptopInfoMainPage extends StatelessWidget {
                         var isInCart = snapshot.data;
                         return ElevatedButton(
                           onPressed: () async {
-                            if (model.isAvailable) {
+                            if (widget.model.isAvailable) {
                               if (!isInCart) {
                                 await OrderItemRepository.insert(
-                                    OrderItemModel(1, arguments.id));
+                                    OrderItemModel(1, widget.arguments.id));
                               }
                               laptopBloc.refreshCatalog(
-                                  arguments.pageIndex,
-                                  arguments.sortOrder,
-                                  arguments.laptopQueryParams);
+                                  widget.arguments.pageIndex,
+                                  widget.arguments.sortOrder,
+                                  widget.arguments.laptopQueryParams);
                               Navigator.pushNamed(
                                 context,
                                 '/shopping-cart',
                                 arguments: {
-                                  'pageIndex': arguments.pageIndex,
-                                  'sortOrder': arguments.sortOrder,
-                                  'params': arguments.laptopQueryParams,
+                                  'pageIndex': widget.arguments.pageIndex,
+                                  'sortOrder': widget.arguments.sortOrder,
+                                  'params': widget.arguments.laptopQueryParams,
                                 },
                               );
                             }
@@ -485,25 +507,25 @@ class LaptopInfoMainPage extends StatelessWidget {
               SizedBox(
                 height: 10.0,
               ),
-              arguments.isEmployee
+              widget.arguments.isEmployee
                   ? Divider(
                       color: Colors.grey,
                     )
                   : Container(),
-              arguments.isEmployee
+              widget.arguments.isEmployee
                   ? SizedBox(
                       height: 10.0,
                     )
                   : Container(),
-              arguments.isEmployee
+              widget.arguments.isEmployee
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         TextButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/laptops/form',
-                                arguments:
-                                    LaptopFormArguments(arguments.id, true));
+                                arguments: LaptopFormArguments(
+                                    widget.arguments.id, true));
                           },
                           child: Text(
                             'Редагувати',
@@ -517,10 +539,10 @@ class LaptopInfoMainPage extends StatelessWidget {
                             bool confirm = await PopupDialogs.showConfirmDialog(
                                 context,
                                 'Видалення моделі',
-                                'Видалити модель ${model.modelName} з переліку товарів?');
+                                'Видалити модель ${widget.model.modelName} з переліку товарів?');
                             if (confirm) {
-                              bool result =
-                                  await laptopBloc.deleteLaptop(arguments.id);
+                              bool result = await laptopBloc
+                                  .deleteLaptop(widget.arguments.id);
                               if (result) {
                                 Navigator.pushNamed(context, '/home');
                               } else {
@@ -544,7 +566,7 @@ class LaptopInfoMainPage extends StatelessWidget {
                       ],
                     )
                   : Container(),
-              arguments.isEmployee
+              widget.arguments.isEmployee
                   ? SizedBox(
                       height: 10.0,
                     )

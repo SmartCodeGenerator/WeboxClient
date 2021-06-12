@@ -1,4 +1,5 @@
 import 'account_service.dart';
+import 'comparison_service.dart';
 import 'deliverer_service.dart';
 import 'laptop_service.dart';
 import 'order_service.dart';
@@ -16,6 +17,7 @@ class NetworkProvider {
   static StorageLotService _storageLotService;
   static OrderService _orderService;
   static PreferenceService _preferenceService;
+  static ComparisonService _comparisonService;
 
   static AccountService get accountService {
     if (_accountService == null) {
@@ -64,5 +66,12 @@ class NetworkProvider {
       _preferenceService = PreferenceService(_baseUrl);
     }
     return _preferenceService;
+  }
+
+  static ComparisonService get comparisonService {
+    if (_comparisonService == null) {
+      _comparisonService = ComparisonService(_baseUrl);
+    }
+    return _comparisonService;
   }
 }

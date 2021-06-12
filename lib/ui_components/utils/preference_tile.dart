@@ -76,7 +76,7 @@ class PreferenceTile extends StatelessWidget {
                         width: 7.0,
                       ),
                       SizedBox(
-                        width: 120.0,
+                        width: 130.0,
                         child: Text(
                           model.laptopModel.modelName,
                           style: TextStyle(
