@@ -81,7 +81,12 @@ class ComparisonsPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/criteria-selection',
-                            arguments: comparisons);
+                            arguments: {
+                              'comparisons': comparisons,
+                              'pageIndex': pageIndex,
+                              'sortOrder': sortOrder,
+                              'params': laptopQueryParams,
+                            });
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(

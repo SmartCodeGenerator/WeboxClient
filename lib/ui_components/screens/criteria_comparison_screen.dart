@@ -65,9 +65,12 @@ class CriteriaComparisonScreen extends StatelessWidget {
                       criteria, alternatives, criteriaMatrix);
                   var recommendedLaptopModel =
                       calculator.findRecommendedModel();
-                  print(recommendedLaptopModel.laptopModel.modelName);
-
-                  // TODO: navigate to recommended model screen
+                  Navigator.pushNamed(context, '/comparison-winner', arguments: {
+                    'model': recommendedLaptopModel.laptopModel,
+                    'pageIndex': args['pageIndex'],
+                    'sortOrder': args['sortOrder'],
+                    'params': args['params'],
+                  });
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

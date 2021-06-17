@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:webox/blocs/laptop_bloc.dart';
-import 'package:webox/config/query_params/laptop_params.dart';
 import 'package:webox/models/laptop_model.dart';
 import 'package:webox/models/laptop_page_model.dart';
+import 'package:webox/services/network_provider.dart';
+import 'package:webox/ui_components/utils/laptop_page_params.dart';
 import 'package:webox/ui_components/utils/laptop_tile.dart';
 
-// ignore: must_be_immutable
 class CatalogPage extends StatefulWidget {
   final bool isEmployee;
-  int pageIndex = 1;
-  String sortOrder;
-  LaptopQueryParams params;
 
   CatalogPage(this.isEmployee);
 
@@ -24,12 +21,39 @@ class _CatalogPageState extends State<CatalogPage> {
     'price_asc': 'Від дешевих до дорогих',
     'price_desc': 'Від дорогих до дешевих'
   };
+  List<LaptopWithIdModel> _laptops;
 
   @override
   void initState() {
     super.initState();
-    widget.sortOrder = sortMap.keys.first;
-    laptopBloc.fetchLaptopPageModel(widget.pageIndex, widget.sortOrder, null);
+    _laptops = [];
+    laptopBloc.fetchLaptopPageModel(laptopPageParams.pageIndex,
+        laptopPageParams.sortOrder, laptopPageParams.laptopQueryParams);
+  }
+
+  Widget buildCatalogListView(LaptopPageModel pageModel) {
+    final _scrollController = ScrollController();
+    _scrollController.addListener(() async {
+      if (_scrollController.position.maxScrollExtent ==
+          _scrollController.position.pixels) {
+        if (pageModel.hasNext) {
+          var page = await NetworkProvider.laptopService.getLaptopPage(
+              ++laptopPageParams.pageIndex,
+              laptopPageParams.sortOrder,
+              laptopPageParams.laptopQueryParams);
+          setState(() {
+            _laptops.addAll(page.laptops);
+          });
+        }
+      }
+    });
+
+    return Expanded(
+      child: ListView(
+        controller: _scrollController,
+        children: buildLaptopTiles(_laptops),
+      ),
+    );
   }
 
   Row buildCatalogRow(List<Widget> children) => Row(
@@ -57,9 +81,9 @@ class _CatalogPageState extends State<CatalogPage> {
           child: LaptopTile(
             laptops[2 * i],
             widget.isEmployee,
-            widget.pageIndex,
-            widget.sortOrder,
-            widget.params,
+            laptopPageParams.pageIndex,
+            laptopPageParams.sortOrder,
+            laptopPageParams.laptopQueryParams,
             key: ObjectKey(
               laptops[2 * i],
             ),
@@ -70,9 +94,9 @@ class _CatalogPageState extends State<CatalogPage> {
           child: LaptopTile(
             laptops[(2 * i) + 1],
             widget.isEmployee,
-            widget.pageIndex,
-            widget.sortOrder,
-            widget.params,
+            laptopPageParams.pageIndex,
+            laptopPageParams.sortOrder,
+            laptopPageParams.laptopQueryParams,
             key: ObjectKey(
               laptops[2 * i],
             ),
@@ -88,9 +112,9 @@ class _CatalogPageState extends State<CatalogPage> {
           child: LaptopTile(
             laptops.last,
             widget.isEmployee,
-            widget.pageIndex,
-            widget.sortOrder,
-            widget.params,
+            laptopPageParams.pageIndex,
+            laptopPageParams.sortOrder,
+            laptopPageParams.laptopQueryParams,
           ),
         ),
         Expanded(
@@ -109,7 +133,8 @@ class _CatalogPageState extends State<CatalogPage> {
       stream: laptopBloc.laptopPageModel,
       builder: (context, AsyncSnapshot<LaptopPageModel> snapshot) {
         if (snapshot.hasData) {
-          var data = snapshot.data;
+          var pageModel = snapshot.data;
+          _laptops = pageModel.laptops;
           return Column(
             children: [
               Row(
@@ -125,10 +150,10 @@ class _CatalogPageState extends State<CatalogPage> {
                         width: 12.0,
                       ),
                       DropdownButton(
-                        value:
-                            widget.sortOrder == null || widget.sortOrder.isEmpty
-                                ? sortMap.keys.first
-                                : widget.sortOrder,
+                        value: laptopPageParams.sortOrder == null ||
+                                laptopPageParams.sortOrder.isEmpty
+                            ? sortMap.keys.first
+                            : laptopPageParams.sortOrder,
                         style: TextStyle(
                           fontSize: 16.33,
                           color: Colors.black,
@@ -142,12 +167,12 @@ class _CatalogPageState extends State<CatalogPage> {
                             .toList(),
                         onChanged: (String value) async {
                           setState(() {
-                            widget.sortOrder = value;
+                            laptopPageParams.sortOrder = value;
                           });
                           await laptopBloc.fetchLaptopPageModel(
                             1,
-                            widget.sortOrder,
-                            widget.params,
+                            laptopPageParams.sortOrder,
+                            laptopPageParams.laptopQueryParams,
                           );
                         },
                       ),
@@ -179,23 +204,7 @@ class _CatalogPageState extends State<CatalogPage> {
                   ),
                 ],
               ),
-              NotificationListener<ScrollNotification>(
-                onNotification: (scrollNotification) {
-                  if (scrollNotification.metrics.pixels ==
-                      scrollNotification.metrics.maxScrollExtent) {
-                    setState(() {
-                      // TODO: implement pagination
-                    });
-                    return true;
-                  }
-                  return false;
-                },
-                child: Expanded(
-                  child: ListView(
-                    children: buildLaptopTiles(data.laptops),
-                  ),
-                ),
-              ),
+              buildCatalogListView(pageModel),
             ],
           );
         } else if (snapshot.hasError) {

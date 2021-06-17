@@ -501,7 +501,7 @@ class _LaptopInfoMainPageState extends State<LaptopInfoMainPage> {
                         ),
                       );
                     },
-                  )
+                  ),
                 ],
               ),
               SizedBox(

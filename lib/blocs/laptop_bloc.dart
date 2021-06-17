@@ -8,9 +8,11 @@ class LaptopBloc {
   final _service = NetworkProvider.laptopService;
   final _laptopPageFetcher = PublishSubject<LaptopPageModel>();
   final _laptopModelFetcher = PublishSubject<LaptopWithIdModel>();
+  final _optionsFetcher = PublishSubject<List<String>>();
 
   Stream<LaptopPageModel> get laptopPageModel => _laptopPageFetcher.stream;
   Stream<LaptopWithIdModel> get laptopModel => _laptopModelFetcher.stream;
+  Stream<List<String>> get searchOptions => _optionsFetcher.stream;
 
   Future fetchLaptopPageModel(
       int pageIndex, String sortOrder, LaptopQueryParams params) async {
@@ -28,6 +30,11 @@ class LaptopBloc {
   Future fetchLaptopModel(String id) async {
     var model = await _service.getLaptop(id);
     _laptopModelFetcher.sink.add(model);
+  }
+
+  Future fetchSearchOptions(String nameCriterion) async {
+    var event = await _service.getSearchOptions(nameCriterion);
+    _optionsFetcher.sink.add(event);
   }
 
   Future<bool> addLaptop(LaptopModel model) async {
@@ -60,6 +67,7 @@ class LaptopBloc {
   void dispose() {
     _laptopPageFetcher.close();
     _laptopModelFetcher.close();
+    _optionsFetcher.close();
   }
 }
 

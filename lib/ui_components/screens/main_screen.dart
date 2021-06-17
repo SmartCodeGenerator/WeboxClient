@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:webox/blocs/account_bloc.dart';
 import 'package:webox/config/screen_args/laptop_form_arguments.dart';
 import 'package:webox/models/account_model.dart';
-import 'package:webox/repositories/order_item_repository.dart';
 import 'package:webox/ui_components/utils/catalog_page.dart';
 import 'package:webox/ui_components/utils/comparisons_page.dart';
+import 'package:webox/ui_components/utils/laptop_page_params.dart';
 import 'package:webox/ui_components/utils/main_screen_drawer.dart';
 import 'package:webox/ui_components/utils/preferences_page.dart';
 
@@ -43,10 +43,16 @@ class _MainScreenState extends State<MainScreen> {
           _accountModel = snapshot.data;
           var catalogPage = CatalogPage(_accountModel.isEmployee);
           _itemViews[0] = catalogPage;
-          _itemViews[1] = ComparisonsPage(_accountModel.isEmployee,
-              catalogPage.pageIndex, catalogPage.sortOrder, catalogPage.params);
-          _itemViews[2] = PreferencesPage(_accountModel.isEmployee,
-              catalogPage.pageIndex, catalogPage.sortOrder, catalogPage.params);
+          _itemViews[1] = ComparisonsPage(
+              _accountModel.isEmployee,
+              laptopPageParams.pageIndex,
+              laptopPageParams.sortOrder,
+              laptopPageParams.laptopQueryParams);
+          _itemViews[2] = PreferencesPage(
+              _accountModel.isEmployee,
+              laptopPageParams.pageIndex,
+              laptopPageParams.sortOrder,
+              laptopPageParams.laptopQueryParams);
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -56,9 +62,11 @@ class _MainScreenState extends State<MainScreen> {
               actions: [
                 IconButton(
                   icon: Icon(Icons.search),
-                  onPressed: () async {
-                    // TODO: implement searchParam
-                    await OrderItemRepository.truncate();
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/laptop-search', arguments: {
+                      'sortOrder': laptopPageParams.sortOrder,
+                      'params': laptopPageParams.laptopQueryParams,
+                    });
                   },
                 ),
                 IconButton(
@@ -70,9 +78,9 @@ class _MainScreenState extends State<MainScreen> {
                       context,
                       '/shopping-cart',
                       arguments: {
-                        'pageIndex': catalogPage.pageIndex,
-                        'sortOrder': catalogPage.sortOrder,
-                        'params': catalogPage.params,
+                        'pageIndex': laptopPageParams.pageIndex,
+                        'sortOrder': laptopPageParams.sortOrder,
+                        'params': laptopPageParams.laptopQueryParams,
                       },
                     );
                   },
@@ -81,9 +89,9 @@ class _MainScreenState extends State<MainScreen> {
             ),
             drawer: MainScreenDrawer(
               _accountModel,
-              catalogPage.pageIndex,
-              catalogPage.sortOrder,
-              catalogPage.params,
+              laptopPageParams.pageIndex,
+              laptopPageParams.sortOrder,
+              laptopPageParams.laptopQueryParams,
             ),
             body: SafeArea(
               child: Padding(

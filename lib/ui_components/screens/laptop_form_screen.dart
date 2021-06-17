@@ -46,17 +46,20 @@ class LaptopFormScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: arguments.isForUpdate
-              ? buildLaptopFormForUpdate(arguments)
-              : LaptopForm(
-                  formKey: formKey,
-                  model: LaptopModel('', '', '', '', 0, 0, 0.0, '', 0.0, 0.0,
-                      0.0, false, null),
-                  arguments: arguments,
-                ),
+          child: SingleChildScrollView(
+            child: arguments.isForUpdate
+                ? buildLaptopFormForUpdate(arguments)
+                : LaptopForm(
+                    formKey: formKey,
+                    model: LaptopModel('', '', '', '', 0, 0, 0.0, '', 0.0, 0.0,
+                        0.0, false, null),
+                    arguments: arguments,
+                  ),
+          ),
         ),
       ),
     );

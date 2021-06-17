@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:webox/models/comparison_model.dart';
 
 class CriteriaSelectionScreen extends StatefulWidget {
   const CriteriaSelectionScreen({Key key}) : super(key: key);
@@ -20,8 +19,8 @@ class _CriteriaSelectionScreenState extends State<CriteriaSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var comparisons =
-        ModalRoute.of(context).settings.arguments as List<ComparisonModel>;
+    var args =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -184,7 +183,10 @@ class _CriteriaSelectionScreenState extends State<CriteriaSelectionScreen> {
                     Navigator.pushNamed(context, '/criteria-comparison',
                         arguments: {
                           'criteria': criteria,
-                          'alternatives': comparisons,
+                          'alternatives': args['comparisons'],
+                          'pageIndex': args['pageIndex'],
+                          'sortOrder': args['sortOrder'],
+                          'params': args['params'],
                         });
                   } else {
                     showDialog(

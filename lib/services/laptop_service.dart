@@ -186,4 +186,26 @@ class LaptopService {
       throw Exception('Error ${response.statusCode}');
     }
   }
+
+  Future<List<String>> getSearchOptions(String nameCriterion) async {
+    final prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('apiAccessToken');
+    var headers = {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/json',
+      'content-type': 'application/json'
+    };
+    var response = await http.get('$_baseUrl/laptops/names?name=$nameCriterion',
+        headers: headers);
+    if (response.statusCode == 200) {
+      List<String> options = [];
+      var data = jsonDecode(response.body);
+      for (var item in data) {
+        options.add(item.toString());
+      }
+      return options;
+    } else {
+      throw Exception('Помилка при завантаженні даних');
+    }
+  }
 }
