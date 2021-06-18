@@ -1,12 +1,12 @@
 class LaptopQueryParams {
   String modelName = '';
-  String manufacturer = '';
-  String processor = '';
-  String graphics = '';
-  int ram = 0;
-  int ssd = 0;
-  double screen = 0.0;
-  String os = '';
+  List<String> manufacturer = [];
+  List<String> processor = [];
+  List<String> graphics = [];
+  List<int> ram = [];
+  List<int> ssd = [];
+  List<double> screen = [];
+  List<String> os = [];
   double minWeight = 0.0;
   double maxWeight = 0.0;
   double minPrice = 0.0;

@@ -37,6 +37,50 @@ class LaptopBloc {
     _optionsFetcher.sink.add(event);
   }
 
+  Future<List<String>> getManufacturers() async {
+    return await _service.getManufacturers();
+  }
+
+  Future<List<String>> getProcessors() async {
+    return await _service.getProcessors();
+  }
+
+  Future<List<String>> getGraphics() async {
+    return await _service.getGraphics();
+  }
+
+  Future<List<int>> getRam() async {
+    return await _service.getRam();
+  }
+
+  Future<List<int>> getSsd() async {
+    return await _service.getSsd();
+  }
+
+  Future<List<double>> getScreens() async {
+    return await _service.getScreens();
+  }
+
+  Future<List<String>> getOS() async {
+    return await _service.getOS();
+  }
+
+  Future<double> getMinWeight() async {
+    return await _service.getMinWeight();
+  }
+
+  Future<double> getMaxWeight() async {
+    return await _service.getMaxWeight();
+  }
+
+  Future<double> getMinPrice() async {
+    return await _service.getMinPrice();
+  }
+
+  Future<double> getMaxPrice() async {
+    return await _service.getMaxPrice();
+  }
+
   Future<bool> addLaptop(LaptopModel model) async {
     try {
       return await _service.addLaptop(model);

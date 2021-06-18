@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webox/ui_components/screens/best_alternative_screen.dart';
 import 'package:webox/ui_components/screens/card_payment_screen.dart';
+import 'package:webox/ui_components/screens/catalog_filter_screen.dart';
 import 'package:webox/ui_components/screens/change_password_screen.dart';
 import 'package:webox/ui_components/screens/criteria_comparison_screen.dart';
 import 'package:webox/ui_components/screens/criteria_selection_screen.dart';
@@ -59,4 +60,5 @@ final routes = <String, WidgetBuilder>{
   '/criteria-comparison': (context) => CriteriaComparisonScreen(),
   '/comparison-winner': (context) => BestAlternativeScreen(),
   '/laptop-search': (context) => LaptopSearchScreen(),
+  '/laptop-filter': (context) => CatalogFilterScreen(),
 };

@@ -198,8 +198,22 @@ class _CatalogPageState extends State<CatalogPage> {
                         ),
                       ],
                     ),
-                    onPressed: () {
-                      // TODO: implement filtering
+                    onPressed: () async {
+                      Navigator.pushNamed(context, '/laptop-filter',
+                          arguments: {
+                            'manufacturers':
+                                await laptopBloc.getManufacturers(),
+                            'processors': await laptopBloc.getProcessors(),
+                            'graphics': await laptopBloc.getGraphics(),
+                            'ram': await laptopBloc.getRam(),
+                            'ssd': await laptopBloc.getSsd(),
+                            'screens': await laptopBloc.getScreens(),
+                            'os': await laptopBloc.getOS(),
+                            'minWeight': await laptopBloc.getMinWeight(),
+                            'maxWeight': await laptopBloc.getMaxWeight(),
+                            'minPrice': await laptopBloc.getMinPrice(),
+                            'maxPrice': await laptopBloc.getMaxPrice(),
+                          });
                     },
                   ),
                 ],
